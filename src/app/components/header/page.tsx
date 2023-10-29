@@ -1,10 +1,12 @@
 import React from 'react';
 import Link from 'next/link';
+import './header.styles.scss'; 
+import CartIcon from '../cart-icon/page';
 
 export default function Header() {
   return (
-    <nav className='nav-menu container'>
-       <div className='logo'>
+    <nav className="nav-menu container">
+       <div className="logo">
           <Link href='/'>
             Nomad
           </Link>
@@ -21,6 +23,7 @@ export default function Header() {
             </Link>
           </li>
        </ul>
+       <CartIcon />
     </nav>
   )
 }
