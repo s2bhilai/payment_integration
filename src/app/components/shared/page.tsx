@@ -2,18 +2,27 @@ import React from 'react'
 import './featured-product.styles.scss'
 import { Product } from '@/app/types/product'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 
 type Props = {
   product: Product
 }
 
+//For resolving image urls
+const loaderProp = ({src}: any) => {
+  return src;
+}
+
 export default function FeaturedProduct({ product }: Props) {
-  const { title,imageUrl, price } = product;
+  const router = useRouter();
+  const { title,imageUrl, price,id } = product;
 
   return (
     <div className='featured-product'>
-      <div className='featured-image'>
-        <Image src={imageUrl} alt='product' width={300} height={300} />
+      <div className='featured-image' onClick={() => router.push(`components/single-product?id=${id}`) }>
+        <Image src={imageUrl} alt='product' width={100} height={300} 
+           loader={loaderProp}
+           unoptimized />
       </div>
       <div className='name-price'>
         <h3>{title}</h3>

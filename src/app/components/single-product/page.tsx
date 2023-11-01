@@ -1,7 +1,70 @@
-import React from 'react'
+'use client'
+
+import React, { useContext,useState,useEffect } from 'react'
+import './single-product.styles.scss'
+import { ContextType, ProductsContext } from '@/app/context/products-context'
+import { usePathname,useRouter,useSearchParams } from 'next/navigation'
+import { Product } from '@/app/types/product'
+import MasterLayout from '../shared/master-layout'
+import Image from 'next/image'
 
 export default function SingleProduct() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+ 
+  const { products } = useContext(ProductsContext) as ContextType;
+  const [product,setProduct] = useState<Product | undefined>(undefined);
+  const id = searchParams.get('id');
+  console.log('id_from_query:', id);
+  console.log('products: ', products);
+
+  useEffect(() => {
+    console.log('Inside useEffect');
+
+    const product: Product | undefined = products.find(item => Number(item.id) === Number(id));
+    console.log('product: ', product);
+
+    if(!product) {
+      router.push(`/components/pages/shop`);
+    }
+
+    setProduct(product);
+  },[product,id,router,products]);
+
+  if(!product) return <div>No products available</div>;
+
+  //For resolving image urls
+  const loaderProp = ({src}: any) => {
+    return src;
+  }
+
   return (
-    <div>page</div>
+    <MasterLayout>
+      <div className='single-product-container'>
+        <div className='product-image'>
+          <Image src={product!.imageUrl} alt='product' height={400} loader={loaderProp} width={400} />
+        </div>
+        <div className='product-details'>
+          <div className='name-price'>
+            <h3>{product?.title}</h3>
+            <p>{product?.price}</p>
+          </div>
+          <div className='add-to-cart-btns'>
+            <button className='button is-white nomad-btn' id='btn-white-outline'>
+              ADD TO CART
+            </button>
+            <button className='button is-black nomad-btn' id='btn-white-outline'>
+              PROCEED TO CHECKOUT
+            </button>
+          </div>
+          <div className='product-description'>
+            <p>
+              {product?.description}
+            </p>
+          </div>
+        </div>
+      </div>
+    </MasterLayout>
   )
 }
