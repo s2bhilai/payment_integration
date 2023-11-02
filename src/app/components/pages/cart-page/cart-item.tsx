@@ -9,7 +9,6 @@ type Props = {
   increase: (product: Product) => void;
   decrease: (product: Product) => void;
   removeProduct: (product: Product) => void;
-  clearCart: () => void;
 }
 
 //For resolving image urls
@@ -17,7 +16,7 @@ const loaderProp = ({src}: any) => {
   return src;
 }
 
-export default function CartItem({ product,increase,decrease,removeProduct,clearCart }: Props) {
+export default function CartItem({ product,increase,decrease,removeProduct }: Props) {
   const { title,imageUrl,price,quantity } = product;
   return (
     <div className='cart-item'>
