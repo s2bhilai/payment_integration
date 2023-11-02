@@ -7,6 +7,8 @@ import { usePathname,useRouter,useSearchParams } from 'next/navigation'
 import { Product } from '@/app/types/product'
 import MasterLayout from '../shared/master-layout'
 import Image from 'next/image'
+import { CartContext, CartContextType } from '@/app/context/cart-context'
+import { isInCart } from '@/app/helpers'
 
 export default function SingleProduct() {
   const router = useRouter();
@@ -14,16 +16,12 @@ export default function SingleProduct() {
   const searchParams = useSearchParams();
  
   const { products } = useContext(ProductsContext) as ContextType;
+  const { state, addProduct,increase } = useContext(CartContext) as CartContextType;
   const [product,setProduct] = useState<Product | undefined>(undefined);
   const id = searchParams.get('id');
-  console.log('id_from_query:', id);
-  console.log('products: ', products);
 
   useEffect(() => {
-    console.log('Inside useEffect');
-
     const product: Product | undefined = products.find(item => Number(item.id) === Number(id));
-    console.log('product: ', product);
 
     if(!product) {
       router.push(`/components/pages/shop`);
@@ -33,6 +31,8 @@ export default function SingleProduct() {
   },[product,id,router,products]);
 
   if(!product) return <div>No products available</div>;
+
+  const itemInCart = isInCart(product, state.cartItems);
 
   //For resolving image urls
   const loaderProp = ({src}: any) => {
@@ -51,9 +51,25 @@ export default function SingleProduct() {
             <p>{product?.price}</p>
           </div>
           <div className='add-to-cart-btns'>
-            <button className='button is-white nomad-btn' id='btn-white-outline'>
-              ADD TO CART
-            </button>
+            {
+              !itemInCart && (
+                <button className='button is-black nomad-btn' 
+                   onClick={() => { addProduct(product) }}
+                >
+                  ADD TO CART
+                </button> 
+              )
+            }
+            {
+              itemInCart && (
+                <button className='button is-white nomad-btn' id='btn-white-outline'
+                  onClick={() => increase(product) }
+                >
+                  ADD MORE
+                </button> 
+              )
+            }
+
             <button className='button is-black nomad-btn' id='btn-white-outline'>
               PROCEED TO CHECKOUT
             </button>

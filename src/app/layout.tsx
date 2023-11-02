@@ -1,3 +1,4 @@
+import CartContextProvider from './context/cart-context';
 import ProductsContextProvider from './context/products-context';
 import './globals.css';
 
@@ -10,7 +11,9 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <ProductsContextProvider>
-          {children}
+          <CartContextProvider>
+              {children}
+          </CartContextProvider>
         </ProductsContextProvider>
       </body>
     </html>
